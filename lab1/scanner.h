@@ -8,17 +8,17 @@ using namespace std;
 typedef unordered_map<string, string> StringMap;
 typedef unordered_map<string, int> CharMap;
 
-StringMap KT({{"break","4"},{"case","5"},{"char","6"},{"const","7"},{"continue","8"},{"default","9"},
+StringMap KT({{"break","04"},{"case","05"},{"char","06"},{"const","07"},{"continue","08"},{"default","09"},
              {"do","10"},{"double","11"},{"else","12"},{"enum","13"},{"extern","14"},{"float","15"},
              {"for","16"},{"goto","17"},{"if","18"},{"int","19"},{"long","20"},{"register","21"},{"return","22"},
              {"short","23"},{"signed","24"},{"sizeof","25"},{"static","26"},{"struct","27"},{"switch","28"},{"typedef","29"},
-             {"union","30"},{"unsigned","31"},{"void","32"},{"volatile","33"},{"while","34"},{"main", "35"}});
+             {"union","30"},{"unsigned","31"},{"void","32"},{"volatile","33"},{"while","34"}});
 
-StringMap PT({{">=","36"},{"<=","37"},{"==","38"},{"!=","39"},{"=","40"},{">","41"},{"<","42"},{"%","43"},
-             {"+","44"},{"+=","45"},{"++","46"},{"-","47"},{"-=","48"},{"--","49"},{"*","50"},{"*=","51"},
-             {"/","52"},{"/=","53"},{"(","54"},{")","55"},{"{","56"},{"}","57"},{",","58"},{";","59"},{"[","60"},
-             {"]","61"},{"|","62"},{"&","63"},{"^","64"},{"!","65"},{"<<","66"},{">>","67"},{"->","68"},{".","69"},
-             {"#","70"},{"||","71"},{"&&","72"}});
+StringMap PT({{">=","35"},{"<=","36"},{"==","37"},{"!=","38"},{"=","39"},{">","40"},{"<","41"},{"%","42"},
+             {"+","43"},{"+=","44"},{"++","45"},{"-","46"},{"-=","47"},{"--","48"},{"*","49"},{"*=","50"},
+             {"/","51"},{"/=","52"},{"(","53"},{")","54"},{"{","55"},{"}","56"},{",","57"},{";","58"},{"[","59"},
+             {"]","60"},{"|","61"},{"&","62"},{"^","63"},{"!","64"},{"<<","65"},{">>","66"},{"->","67"},{".","68"},
+             {"#","69"},{"||","70"},{"&&","71"}});
 
 
 
@@ -47,7 +47,7 @@ void Scanner::build_DFA(){
                    {"symbol", 16}});
     CharMap state2({{"letter", 2}, {"digit", 2}, {"other", 0}, {"end", -1}});
     CharMap state3({{"digit", 3}, {"dot", 17}, {"e", 18},{"other", 0}, {"end", -2}});
-    CharMap state4({{"char", 19},{"trans", 38}});
+    CharMap state4({{"char", 19},{"trans", 38}, {"single quote", 40}});
     CharMap state5({{"char", 5}, {"double quote", 39}});
     CharMap state6({{"equal", 20}, {"greater", 21}, {"end", -5}, {"other", 0}});
     CharMap state7({{"equal", 22}, {"less", 23}, {"end", -5}, {"other", 0}});
@@ -166,6 +166,7 @@ string Scanner::state2code(int state, string token){
             }
             break;
         default:
+            token_code = "-1";
             break;
     }
     return token_code;
@@ -253,6 +254,9 @@ int Scanner::state_change(int state, char c){
         case 4:
             if(c == '\\'){
                 next_state = DFA[state]["trans"];
+            }
+            if(c == '\''){
+                next_state = DFA[state]["single quote"];
             }
             else{
                 next_state = DFA[state]["char"];
@@ -502,8 +506,8 @@ void Scanner::scan(string filename){
             }
             if(state <= 0){
                 // token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
-                token_code += "<" + token + ", " + state2code(state, token) + ">" + "\n";
-                state = 1;
+                token_code += "<" + token + ", " + state2code(state, token) + ">";
+                state = 1;  
                 token = "";
                 // seq = "";
                 i--;

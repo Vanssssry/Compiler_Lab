@@ -1,26 +1,15 @@
-int* goodDaysToRobBank(int* security, int securitySize, int time, int* returnSize) {
-    int * left = (int *)malloc(sizeof(int) * securitySize);
-    int * right = (int *)malloc(sizeof(int) * securitySize);
-    memset(left, 0, sizeof(int) * securitySize);
-    memset(right, 0, sizeof(int) * securitySize);
-    for (int i = 1; i < securitySize; i++) {
-        if (security[i] <= security[i - 1]) {
-            left[i] = left[i - 1] + 1;
-        }
-        if (security[securitySize - i - 1] <= security[securitySize - i]) {
-            right[securitySize - i - 1] = right[securitySize - i] + 1;
-        }
+int main(void){
+    int a = 1, d = 2e-1.23, c;
+    float b = 21.35;
+    if(a <= d){
+        c = a;
+        a = d;
+        d = c;
     }
-
-    int * ans = (int *)malloc(sizeof(int) * securitySize);
-    int pos = 0;
-    for (int i = time; i < securitySize - time; i++) {
-        if (left[i] >= time && right[i] >= time) {
-            ans[pos++] = i;
-        }
-    }
-    free(left);
-    free(right);
-    *returnSize = pos;
-    return ans;
+    char ch[10] = "ok";
+    char x, y = 'a';
+    c = a + d;
+    for(int i = 0 ; i < n ; ++i)
+        d--;
+    return 0;
 }
