@@ -53,11 +53,13 @@
 
 ### 构造词法分析器DFA
 
-为了可以识别不同界符、区分所有标识符、常数变量、字符、字符串，设计DFA如下，在起始状态遇到不同字符时转变为不同状态。为了最终可以区分识别，我将终态设计为6个不同的值，0为异常，即遇到非法词如10. 、10.a$、‘da’等不符合C语言词法的时返回0状态（在图中未画出，异常）；-1为标识符或关键字；-2为常数；-3为字符；-4为字符串；-5为界符。
+为了可以识别不同界符、区分所有标识符、常数变量、字符、字符串，设计DFA如下，在起始状态遇到不同字符时转变为不同状态。为了最终可以区分识别，我将终态设计为6个不同的值，0为异常，即遇到非法词如10. 、10.a$、‘da’等不符合C语言词法的时返回0状态（在图中未画出，异常）；-1为标识符或关键字；-2为常数；-3为字符；-4为字符串；-5为界符；-6为行末注释；-7为行内注释。
 
-DFA总共有46种状态，可以识别绝大多数C语言中会出现的符号，全部合法的标识符，除auto以外的全部关键字，用科学记数法的常数或是普通常数以及字符与字符串。同时还可以做到简单识别一些不合C语言词法的代码，具有一定的可用性。
+DFA总共有51种状态，可以识别绝大多数C语言中会出现的符号，全部合法的标识符，除auto以外的全部关键字，用科学记数法的常数或是普通常数以及字符与字符串。同时还可以做到简单识别一些不合C语言词法的代码，具有一定的可用性。
 
-<img src="D:\学\编译原理\lab1\DFA.jpg" alt="DFA" style="zoom:50%;" />
+还需要考虑代码中存在注释的情况，对于/**/注释可能跨行，也可能在行内，也可能跨行，而//注释较为简单，其只能时行末且不能跨行。但识别到他们后都不需要对注释生成token_code. 得到终态后对应选择忽略即可。
+
+<img src="D:\学\编译原理\lab1\DFA.jpg" alt="DFA" style="zoom: 67%;" />
 
 ### 构造token类别码生成器
 
@@ -118,6 +120,11 @@ DFA总共有46种状态，可以识别绝大多数C语言中会出现的符号�
     			begin
     				token := token + c
     			end
+    			if state == -6 or -7
+    			begin
+    				reinitial the state
+    				continue
+    			end
     			if state <= 0
     			begin
     				token_code = state2code(state, token)
@@ -128,15 +135,16 @@ DFA总共有46种状态，可以识别绝大多数C语言中会出现的符号�
     		end
     	end
     ```
-
+    
   * 流程图如下：
-
+  
     ```mermaid
     graph TB
     读入文件-->初始化状态-->按行读入文件并存储到临时变量string-->使用DFA逐个分析字符得到转换状态--state大于1-->使用DFA逐个分析字符得到转换状态--state小于0-->送到token类别码生成器-->将token类别码写入文件--文件未读完-->按行读入文件并存储到临时变量string
+    使用DFA逐个分析字符得到转换状态--token检测为注释-->忽略
     将token类别码写入文件--文件读完-->结束得到token_txt
     ```
-
+    
     
 
 # 具体实现
@@ -208,9 +216,9 @@ class Scanner
 
   ```c++
   void Scanner::build_DFA(){
-      CharMap state1({{"blank", 1}, {"letter", 2}, {"digit", 3}, {"single quote", 4}, {"double quote", 5}, 
-                     {"greater", 6}, {"less", 7}, {"equal", 8}, {"not", 9}, {"plus", 10}, {"minus", 11}, 
-                     {"multiply", 12}, {"divide", 13}, {"or", 14}, {"and", 15}, {"symbol", 16}});
+      CharMap state1({{"blank", 1}, {"letter", 2}, {"digit", 3}, {"single quote", 4}, {"double quote", 5}, {"greater", 6}, {"less", 7}, 
+                     {"equal", 8}, {"not", 9}, {"plus", 10}, {"minus", 11}, {"multiply", 12}, {"divide", 13}, {"or", 14}, {"and", 15}, 
+                     {"symbol", 16}});
       CharMap state2({{"letter", 2}, {"digit", 2}, {"other", 0}, {"end", -1}});
       CharMap state3({{"digit", 3}, {"dot", 17}, {"e", 18},{"other", 0}, {"end", -2}});
       CharMap state4({{"char", 19},{"trans", 38}, {"single quote", 40}});
@@ -222,7 +230,7 @@ class Scanner
       CharMap state10({{"equal", 26}, {"plus", 35},{"end", -5}, {"other", 0}});
       CharMap state11({{"equal", 27}, {"minus", 36}, {"greater", 37}, {"end", -5}, {"other", 0}});
       CharMap state12({{"equal", 28}, {"end", -5}, {"other", 0}});
-      CharMap state13({{"equal", 29}, {"end", -5}, {"other", 0}});
+      CharMap state13({{"equal", 29}, {"divide", 41}, {"star", 42}, {"end", -5}, {"other", 0}});
       CharMap state14({{"or", 30}, {"end", -5}, {"other", 0}});
       CharMap state15({{"and", 31}, {"end", -5}, {"other", 0}});
       CharMap state16({{"end", -5}, {"other", 0}});
@@ -250,13 +258,17 @@ class Scanner
       CharMap state38({{"char", 19}});
       CharMap state39({{"end", -4}});
       CharMap state40({{"end", -3}});
+      CharMap state41({{"end", -6}});
+      CharMap state42({{"char", 42}, {"star", 43}});
+      CharMap state43({{"divide", 44},{"other", 0}});
+      CharMap state44({{"end", -7}});
   
-      DFA.resize(41);
+      DFA.resize(45);
       DFA[1] = state1;
       DFA[2] = state2;
-      ...
-      DFA[39] = state39;
-      DFA[40] = state40;
+  	...
+      DFA[43] = state43;
+      DFA[44] = state44;
   }
   ```
 
@@ -298,8 +310,21 @@ class Scanner
               if(state > 1){
                   token += c;
               }
+              // //类型注释
+              if(state == -6){
+                  state = 1;  
+                  token = "";
+                  break;
+              }
               //终态生成token_code并将字符指针回退一个字符后重新分析
               if(state <= 0){
+                  /*注释*/
+                  if(state == -7){
+                      state = 1;  
+                      token = "";
+                      seq = "";
+                      continue;
+                  }
                   //完成state到token_code的转换
                   token_code += "<" + token + ", " + state2code(state, token) + ">" + "\n";
                   state = 1;  
@@ -397,15 +422,24 @@ class Scanner
                   next_state = DFA[state]["end"];
               }
               break;
-          ...
+          ...        
+          case 42:
+              if(c == '*'){
+                  next_state = DFA[state]["star"];
+              }
+              else{
+                  next_state = DFA[state]["char"];
+              }            
               break;
-          case 38:
-              next_state = DFA[state]["char"];
+          case 43:
+              if(c == '/'){
+                  next_state = DFA[state]["divide"];
+              }
+              else{
+                  next_state = DFA[state]["other"];
+              }
               break;
-          case 39:
-              next_state = DFA[state]["end"];
-              break;
-          case 40:
+          case 44:
               next_state = DFA[state]["end"];
               break;
   
@@ -531,6 +565,7 @@ int main(int argc, char** argv){
   * 常数，小数，科学记数法（负数属于语法分析阶段完成）
   * 字符如'a'或’\n‘等
   * 字符串“abc”等
+  * 支持//行末注释，以及/**/行内/跨行注释。
 
 
 
@@ -539,8 +574,10 @@ int main(int argc, char** argv){
   demo.c如下：
 
   ```c
+  /*aaaa
+  aaaa*/
   int main(void){
-      int a = 1, d = 2e-1.23, c;
+      int a = 1, /*abc*/ d = 2e-1.23, c; //abc
       float b = 21.35;
       if(a <= d){
           c = a;

@@ -1,5 +1,7 @@
+/*aaaa
+aaaa*/
 int main(void){
-    int a = 1, d = 2e-1.23, c;
+    int a = 1, /*abc*/ d = 2e-1.23, c; //abc
     float b = 21.35;
     if(a <= d){
         c = a;

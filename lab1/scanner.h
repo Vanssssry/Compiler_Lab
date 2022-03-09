@@ -56,7 +56,7 @@ void Scanner::build_DFA(){
     CharMap state10({{"equal", 26}, {"plus", 35},{"end", -5}, {"other", 0}});
     CharMap state11({{"equal", 27}, {"minus", 36}, {"greater", 37}, {"end", -5}, {"other", 0}});
     CharMap state12({{"equal", 28}, {"end", -5}, {"other", 0}});
-    CharMap state13({{"equal", 29}, {"end", -5}, {"other", 0}});
+    CharMap state13({{"equal", 29}, {"divide", 41}, {"star", 42}, {"end", -5}, {"other", 0}});
     CharMap state14({{"or", 30}, {"end", -5}, {"other", 0}});
     CharMap state15({{"and", 31}, {"end", -5}, {"other", 0}});
     CharMap state16({{"end", -5}, {"other", 0}});
@@ -84,8 +84,12 @@ void Scanner::build_DFA(){
     CharMap state38({{"char", 19}});
     CharMap state39({{"end", -4}});
     CharMap state40({{"end", -3}});
+    CharMap state41({{"end", -6}});
+    CharMap state42({{"char", 42}, {"star", 43}});
+    CharMap state43({{"divide", 44},{"other", 0}});
+    CharMap state44({{"end", -7}});
 
-    DFA.resize(41);
+    DFA.resize(45);
     DFA[1] = state1;
     DFA[2] = state2;
     DFA[3] = state3;
@@ -126,6 +130,10 @@ void Scanner::build_DFA(){
     DFA[38] = state38;
     DFA[39] = state39;
     DFA[40] = state40;
+    DFA[41] = state41;
+    DFA[42] = state42;
+    DFA[43] = state43;
+    DFA[44] = state44;
 }
 
 string Scanner::state2code(int state, string token){
@@ -213,7 +221,7 @@ int Scanner::state_change(int state, char c){
             else if(c == '*'){
                 next_state = DFA[state]["multiply"];
             }
-            else if(c == '\\'){
+            else if(c == '/'){
                 next_state = DFA[state]["divide"];
             }
             else if(c == '|'){
@@ -344,6 +352,12 @@ int Scanner::state_change(int state, char c){
         case 13:
             if(c == '='){
                 next_state = DFA[state]["equal"];
+            }
+            else if(c == '/'){
+                next_state = DFA[state]["divide"];
+            }
+            else if(c == '*'){
+                next_state = DFA[state]["star"];
             }
             else{
                 next_state = DFA[state]["end"];
@@ -479,6 +493,29 @@ int Scanner::state_change(int state, char c){
         case 40:
             next_state = DFA[state]["end"];
             break;
+        case 41:
+            next_state = DFA[state]["end"];
+            break;
+        case 42:
+            if(c == '*'){
+                next_state = DFA[state]["star"];
+            }
+            else{
+                next_state = DFA[state]["char"];
+            }            
+            break;
+        case 43:
+            if(c == '/'){
+                next_state = DFA[state]["divide"];
+            }
+            else{
+                next_state = DFA[state]["other"];
+            }
+            break;
+        case 44:
+            next_state = DFA[state]["end"];
+            break;
+
 
         default:
             next_state = DFA[state]["other"];
@@ -494,7 +531,7 @@ void Scanner::scan(string filename){
     string line;
     string token_code;
     string token = "";
-    // string seq = "";
+    string seq = "";
     while(getline(infile, line)){
         int i = 0;
         while(i < line.size()){
@@ -502,14 +539,25 @@ void Scanner::scan(string filename){
             state = state_change(state, c);
             if(state > 1){
                 token += c;
-                // seq += to_string(state) + ",";
+                seq += to_string(state) + ",";
             }
-            if(state <= 0){
-                // token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
-                token_code += "<" + token + ", " + state2code(state, token) + ">";
+            if(state == -6){
                 state = 1;  
                 token = "";
-                // seq = "";
+                break;
+            }                
+            if(state <= 0){
+                if(state == -7){
+                    state = 1;  
+                    token = "";
+                    seq = "";
+                    continue;
+                }
+                token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
+                // token_code += "<" + token + ", " + state2code(state, token) + ">";
+                state = 1;  
+                token = "";
+                seq = "";
                 i--;
             }
             i++;
