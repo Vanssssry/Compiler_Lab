@@ -36,7 +36,7 @@ class Scanner
         Scanner(){
             build_DFA();
         }
-        void scan(string file_name);
+        string scan(string file_name, string mode = "o");
         int state_change(int state, char c);
         string state2code(int state, string token);
 };
@@ -524,7 +524,7 @@ int Scanner::state_change(int state, char c){
     return next_state;
 }
 
-void Scanner::scan(string filename){
+string Scanner::scan(string filename, string mode = "o"){
     ifstream infile;
     infile.open(filename, ios::in);
     int state = 1;
@@ -564,7 +564,13 @@ void Scanner::scan(string filename){
         }
     }
     infile.close();
-    ofstream outfile("token.txt", ios::out);
-    outfile << token_code;
-    outfile.close();
+    if(mode == "o"){
+        ofstream outfile("token.txt", ios::out);
+        outfile << token_code;
+        outfile.close();
+        return "";
+    }
+    else{
+        return token_code;
+    }
 }
