@@ -553,8 +553,8 @@ string Scanner::scan(string filename, string mode){
                     seq = "";
                     continue;
                 }
-                token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
-                // token_code += "<" + state2code(state, token) + ">";
+                // token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
+                token_code += "<" + state2code(state, token) + ">";
                 state = 1;  
                 token = "";
                 seq = "";

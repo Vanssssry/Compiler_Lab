@@ -82,7 +82,7 @@ bool LL1::check(string token_seq){
         while(!analysis_stack.empty()){
             char curr = analysis_stack.top();
             analysis_stack.pop();
-            cout << curr << " " << token_arr[index] << endl;
+            // cout << curr << " " << token_arr[index] << endl;
             if(curr == 'B'){
                 if(Vt[curr].find(token_arr[index]) == Vt[curr].end()){
                     cout << "err B" << endl;
