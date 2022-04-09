@@ -524,7 +524,7 @@ int Scanner::state_change(int state, char c){
     return next_state;
 }
 
-string Scanner::scan(string filename, string mode = "o"){
+string Scanner::scan(string filename, string mode){
     ifstream infile;
     infile.open(filename, ios::in);
     int state = 1;
@@ -553,8 +553,8 @@ string Scanner::scan(string filename, string mode = "o"){
                     seq = "";
                     continue;
                 }
-                token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
-                // token_code += "<" + token + ", " + state2code(state, token) + ">";
+                // token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
+                token_code += "<" + token + ", " + state2code(state, token) + ">" + "\n";
                 state = 1;  
                 token = "";
                 seq = "";
@@ -562,6 +562,10 @@ string Scanner::scan(string filename, string mode = "o"){
             }
             i++;
         }
+    }
+    if(state > 0 && state != 1){
+        state = state_change(state, '#');
+        token_code += "<" + token + ", " + state2code(state, token) + ">" + "\n";
     }
     infile.close();
     if(mode == "o"){

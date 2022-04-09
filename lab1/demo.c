@@ -14,4 +14,5 @@ int main(void){
     for(int i = 0 ; i < n ; ++i)
         d--;
     return 0;
+    //lalala
 }
