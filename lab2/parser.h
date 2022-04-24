@@ -42,14 +42,14 @@ class LL1{
 
 
 void LL1::bulid_analysis_table(){
-    StringMap E({{"00", "AT"},{"03", "AT"}, {"53", "AT"}});
+    StringMap E({{"00", "AT"},{"03", "AT"}, {"53", "AT"}, {"46", "AT"}});
     StringMap A({{"54", ""},{"57", ""}, {"58", ""},
                  {"35", "ATB"}, {"36", "ATB"},{"37", "ATB"}, {"38", "ATB"}, 
                  {"39", "ATB"}, {"40", "ATB"}, {"41", "ATB"}, {"43", "ATB"}, 
                  {"44", "ATB"}, {"46", "ATB"}, {"47", "ATB"}, {"50", "ATB"}, 
                  {"52", "ATB"},  {"61", "ATB"}, {"62", "ATB"}, {"63", "ATB"}, 
                  {"65", "ATB"}, {"66", "ATB"}, {"70", "ATB"}, {"71", "ATB"}});
-    StringMap T({{"00", "CF"},{"03", "CF"},{"53", "CF"}});
+    StringMap T({{"00", "CF"},{"03", "CF"},{"53", "CF"},{"46", "CF"}});
     StringMap C({{"54", ""},{"57", ""}, {"58", ""},{"35", ""}, {"36", ""},
                  {"37", ""}, {"38", ""}, {"39", ""}, {"40", ""}, 
                  {"41", ""}, {"43", ""}, {"44", ""}, {"46", ""}, 
@@ -57,7 +57,7 @@ void LL1::bulid_analysis_table(){
                  {"62", ""}, {"63", ""}, {"65", ""}, {"66", ""}, 
                  {"70", ""}, {"71", ""}, 
                  {"42", "CFD"}, {"49", "CFD"}, {"51", "CFD"}});
-    StringMap F({{"00", "I"},{"03", "I"}, {"53", ")E("}});
+    StringMap F({{"00", "I"},{"03", "I"}, {"53", ")E("}, {"46", "I"}});
     
     unordered_set<string> B({"35", "36","37", "38", "39", "40", "41", "43", 
                              "44", "46", "47", "50", "52",  "61", "62", "63", 
@@ -83,7 +83,7 @@ bool LL1::check(string token_seq){
         while(!analysis_stack.empty()){
             char curr = analysis_stack.top();
             analysis_stack.pop();
-            // cout << curr << " " << token_arr[index] << endl;
+            cout << curr << " " << token_arr[index] << endl;
             if(curr == 'B'){
                 if(Vt[curr].find(token_arr[index]) == Vt[curr].end()){
                     cout << "err B" << endl;
@@ -103,7 +103,16 @@ bool LL1::check(string token_seq){
                 }
             }
             else if(curr == 'I'){
-                if(token_arr[index] != "00" && token_arr[index] != "03"){
+                if(token_arr[index] == "46"){
+                    if(token_arr[index + 1] == "03" || token_arr[index + 1] == "00"){
+                        index += 2;
+                    }
+                    else{
+                        cout << "err I" << endl;
+                        return false;
+                    }
+                }
+                else if(token_arr[index] != "00" && token_arr[index] != "03"){
                     cout << "err I" << endl;
                     return false;
                 }
@@ -172,7 +181,7 @@ class LR{
 };
 
 void LR::build_analysis_table(){
-    LR_StringMap state_0({{"00", {false, "I2"}}, {"03", {false, "I2"}}, 
+    LR_StringMap state_0({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"46", {false, "I2"}},
                           {"E", {false, "E1"}},{"T", {false, "T4"}}, 
                           {"F", {false, "F5"}}
                          });
@@ -194,7 +203,8 @@ void LR::build_analysis_table(){
                           {"42",  {true, "F/I"}}, {"49",  {true, "F/I"}}, {"51",  {true, "F/I"}}
                          });
     
-    LR_StringMap state_3({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"53", {false, "(6"}}, 
+    LR_StringMap state_3({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"46", {false, "I2"}},
+                          {"53", {false, "(6"}}, 
                           {"T",{false, "T8"}}, {"F", {false, "F5"}}
                          });                   
     
@@ -217,13 +227,14 @@ void LR::build_analysis_table(){
                           {"42",  {true, "T/F"}}, {"49",  {true, "T/F"}}, {"51",  {true, "T/F"}}
                          });
 
-    LR_StringMap state_6({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"53", {false, "(6"}},
+    LR_StringMap state_6({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"46", {false, "I2"}},
+                          {"53", {false, "(6"}},
                           {"E", {false, "E10"}}, {"T", {false, "T4"}}, {"F", {false, "F5"}}
                          });
 
-    LR_StringMap state_7({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"53", {false, "(6"}},
-                          {"F", {false, "F9"}}
-    });
+    LR_StringMap state_7({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"46", {false, "I2"}},
+                          {"53", {false, "(6"}},{"F", {false, "F9"}}
+                         });
 
     LR_StringMap state_8({{"54", {true, "E/EBT"}}, {"57", {true, "E/EBT"}}, {"58", {true, "E/EBT"}},
                           {"35", {true, "E/EBT"}}, {"36", {true, "E/EBT"}}, {"37", {true, "E/EBT"}}, {"38", {true, "E/EBT"}}, 
@@ -294,7 +305,13 @@ bool LR::check(string token_seq){
                 cout << "Wi " << cur_symbol << " " << cur_state << endl;
                 state_stack.push(cur_state);
                 symbol_stack.push(cur_symbol);
-                index++;
+                if(token_arr[index] == "46" && state != "1" && state != "10"){
+                    // cout << state << endl;
+                    index += 2;
+                }
+                else{
+                    index++;
+                }
             }
             else{
                 string s = analysis_table[state][token_arr[index]].second;
