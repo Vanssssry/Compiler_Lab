@@ -5,8 +5,8 @@ using namespace std;
 
 int main(){
     Scanner scanner;
-    // LL1 parser;
-    LR parser;
+    LL1 parser;
+    // LR parser;
     string filename;
     cin >> filename;
     string token_seq = scanner.scan(filename, "no");
