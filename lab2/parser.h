@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <algorithm>
+#include "utilizer.h"
 using namespace std;
 
 typedef unordered_map<string, string> StringMap;
@@ -13,24 +14,24 @@ typedef unordered_map<char, StringMap> LL1_table;
 typedef unordered_map<string, LR_StringMap> LR_table;
 typedef unordered_map<char, unordered_set<string>> symbol_set;
 
-vector<string> pre_process(string token_seq){
-    vector<string> token_arr;
-    for(int i = 0 ; i < token_seq.size() ; ++i){
-        if(token_seq[i] == '<') continue;
-        string token = "";
-        while(token_seq[i] != '>'){
-            token += token_seq[i];
-            i++;
-        }
-        token_arr.push_back(token);
-    }
-    return token_arr;
-}
+// vector<string> pre_process(string token_seq){
+//     vector<string> token_arr;
+//     for(int i = 0 ; i < token_seq.size() ; ++i){
+//         if(token_seq[i] == '<') continue;
+//         string token = "";
+//         while(token_seq[i] != '>'){
+//             token += token_seq[i];
+//             i++;
+//         }
+//         token_arr.push_back(token);
+//     }
+//     return token_arr;
+// }
 
 class LL1{
     private:
         LL1_table analysis_table;
-        stack<char> analysis_stack;
+        // stack<char> analysis_stack;
         symbol_set Vt; 
         
     public:
@@ -38,7 +39,7 @@ class LL1{
             bulid_analysis_table();
         }
         void bulid_analysis_table();
-        bool check(string token_seq);
+        bool check(vector<string> token_arr);
 };
 
 
@@ -75,8 +76,10 @@ void LL1::bulid_analysis_table(){
     Vt['D'] = D;
 }
 
-bool LL1::check(string token_seq){
-    vector<string> token_arr = pre_process(token_seq);
+bool LL1::check(vector<string> token_arr){
+    // vector<string> token_arr = pre_process(token_seq);
+    stack<char> analysis_stack;
+    
     int index = 0;
     while(index < token_arr.size()){
         analysis_stack.push('#');
@@ -107,6 +110,27 @@ bool LL1::check(string token_seq){
                 if(token_arr[index] == "46"){
                     if(token_arr[index + 1] == "03" || token_arr[index + 1] == "00"){
                         index += 2;
+                    }
+                    else if(token_arr[index + 1] == "53"){
+                        int right = index + 1, left = index + 1;
+                        for( ; token_arr[right] != "54" ; ++right){
+                            // cout << token_arr[right] << endl;
+                            if(right == token_arr.size() - 1){
+                                cout << "Missing \')\'" << endl;
+                                return false;
+                            }
+                        }
+                        right++;
+                        vector<string> temp{&token_arr[left], &token_arr[right]};
+                        temp.push_back("58");
+                        if(check(temp)){
+                            index = right;
+                            // cout << index << endl;
+                        }
+                        else{
+                            cout << "invaild sub-expression" << endl;
+                            return false;
+                        }
                     }
                     else{
                         cout << "Invaild negative number!" << endl;
@@ -179,7 +203,7 @@ bool LL1::check(string token_seq){
             }
         }
     }
-    cout << "expression correct!" <<endl;
+    // cout << "expression correct!" <<endl;
     return true;
 }
 
@@ -187,19 +211,20 @@ bool LL1::check(string token_seq){
 
 class LR{
     private:
-        stack<char> symbol_stack;
-        stack<string> state_stack;
+        // stack<char> symbol_stack;
+        // stack<string> state_stack;
         LR_table analysis_table;
 
 
     public:
         LR(){ build_analysis_table(); }
         void build_analysis_table();
-        bool check(string token_seq);
+        bool check(vector<string> token_arr);
 };
 
 void LR::build_analysis_table(){
     LR_StringMap state_0({{"00", {false, "I2"}}, {"03", {false, "I2"}}, {"46", {false, "I2"}}, {"45", {false, "I2"}}, {"48", {false, "I2"}},
+                          {"53", {false, "(6"}},
                           {"E", {false, "E1"}},{"T", {false, "T4"}}, 
                           {"F", {false, "F5"}}
                          });
@@ -307,8 +332,11 @@ void LR::build_analysis_table(){
 
 }
 
-bool LR::check(string token_seq){
-    vector<string> token_arr = pre_process(token_seq);
+bool LR::check(vector<string> token_arr){
+    // vector<string> token_arr = pre_process(token_seq);
+    stack<string> state_stack;
+    stack<char> symbol_stack;
+
     int index = 0;
     while(index < token_arr.size()){
         symbol_stack.push('#');
@@ -377,6 +405,32 @@ bool LR::check(string token_seq){
                     // cout << state << endl;
                     if(token_arr[index + 1] == "00" || token_arr[index + 1] == "03")
                         index += 2;
+                    else if(token_arr[index + 1] == "53"){
+                        int right = index + 1, left = index + 1;
+                        for( ; token_arr[right] != "54" ; ++right){
+                            // cout << token_arr[right] << endl;
+                            if(right == token_arr.size() - 1){
+                                cout << "Missing \')\'" << endl;
+                                return false;
+                            }
+                        }
+                        right++;
+                        vector<string> temp{&token_arr[left], &token_arr[right]};
+                        temp.push_back("58");
+                        // for(int i = 0 ; i < temp.size() ; ++i){
+                        //     cout << temp[i] << " ";
+                        // }
+                        // cout << endl;
+                        if(check(temp)){
+                            index = right;
+                            // cout << index << endl;
+                            // cout << "curr" << token_arr[index] << endl;
+                        }
+                        else{
+                            cout << "invaild sub-expression" << endl;
+                            return false;
+                        }
+                    }
                     else{
                         cout << "invaild negative number!" << endl;
                         return false;
@@ -452,6 +506,6 @@ bool LR::check(string token_seq){
             }
         }
     }
-    cout << "expression correct!" <<endl;
+    // cout << "expression correct!" <<endl;
     return true;
 }
