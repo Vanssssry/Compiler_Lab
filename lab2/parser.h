@@ -87,7 +87,7 @@ bool LL1::check(string token_seq){
             cout << curr << " " << token_arr[index] << endl;
             if(curr == 'B'){
                 if(Vt[curr].find(token_arr[index]) == Vt[curr].end()){
-                    cout << "err B" << endl;
+                    cout << "Missing operator! (+,-,...)" << endl;
                     return false;
                 }
                 else{
@@ -96,7 +96,7 @@ bool LL1::check(string token_seq){
             }
             else if(curr == 'D'){
                 if(Vt[curr].find(token_arr[index]) == Vt[curr].end()){
-                    cout << "err D" << endl;
+                    cout << "Missing operator! (*,/,...)" << endl;
                     return false;
                 }
                 else{
@@ -109,7 +109,7 @@ bool LL1::check(string token_seq){
                         index += 2;
                     }
                     else{
-                        cout << "err negative num" << endl;
+                        cout << "Invaild negative number!" << endl;
                         return false;
                     }
                 }
@@ -118,7 +118,7 @@ bool LL1::check(string token_seq){
                         index += 2;
                     }
                     else{
-                        cout << "err I" << endl;
+                        cout << "Invaild ++ or --" << endl;
                         return false;
                     }
                 }
@@ -131,7 +131,7 @@ bool LL1::check(string token_seq){
                     }
                 }
                 else if(token_arr[index] != "00" && token_arr[index] != "03"){
-                    cout << "err I" << endl;
+                    cout << "Missing operand!" << endl;
                     return false;
                 }
                 else{
@@ -140,7 +140,7 @@ bool LL1::check(string token_seq){
             }
             else if(curr == '('){
                 if(token_arr[index] != "53"){
-                    cout << "err (" << endl;
+                    cout << "Missing \'(\' !" << endl;
                     return false;
                 }
                 else{
@@ -149,7 +149,7 @@ bool LL1::check(string token_seq){
             }
             else if(curr == ')'){
                 if(token_arr[index] != "54"){
-                    cout << "err )" << endl;
+                    cout << "Missing \')\' !" << endl;
                     return false;
                 }
                 else{
@@ -158,7 +158,7 @@ bool LL1::check(string token_seq){
             }
             else if(curr == '#'){
                 if(token_arr[index] != "57" && token_arr[index] != "58"){
-                    cout << "err #" << endl;
+                    cout << "Missing terminator!" << endl;
                     return false;
                 }
                 else{
@@ -167,7 +167,7 @@ bool LL1::check(string token_seq){
             }
             else{
                 if(analysis_table[curr].find(token_arr[index]) == analysis_table[curr].end()){
-                    cout << "err " << curr << endl;
+                    cout << "error " << curr << endl;
                     return false;
                 }
                 else{
@@ -339,6 +339,31 @@ bool LR::check(string token_seq){
                 cout << "We can accept token: " << ac << endl;
                 cout << "To regress " << vaild_left << endl;
                 cout << "But we got " << token_arr[index] << " now." << endl;
+                cout << "Error may be: " << endl; 
+                if(state == "0"){
+                    cout << "\tMissing operand!" << endl;
+                }
+                if(state == "1"){
+                    cout << "\tMissing operator or terminator!" << endl;
+                }
+                if(state == "3"){
+                    cout << "\tMissing operand or \'(\'!" << endl;
+                }
+                if(state == "4"){
+                    cout << "\tMissing operator!" << endl;
+                }
+                if(state == "6"){
+                    cout << "\tMissing operand or \'(\'!" << endl;
+                }
+                if(state == "7"){
+                    cout << "\tMissing operand or \'(\'!" << endl;
+                }
+                if(state == "8"){
+                    cout << "\tMissing operator!" << endl;
+                }
+                if(state == "10"){
+                    cout << "\tMissing operand or \')\'!" << endl;
+                }
                 return false;
             }
             else if(!analysis_table[state][token_arr[index]].first){
