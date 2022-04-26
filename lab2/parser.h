@@ -122,6 +122,14 @@ bool LL1::check(string token_seq){
                         return false;
                     }
                 }
+                else if(token_arr[index] == "00"){
+                    if(token_arr[index + 1] == "45" || token_arr[index + 1] == "48"){
+                        index += 2;
+                    }
+                    else{
+                        index++;
+                    }
+                }
                 else if(token_arr[index] != "00" && token_arr[index] != "03"){
                     cout << "err I" << endl;
                     return false;
@@ -347,6 +355,14 @@ bool LR::check(string token_seq){
                     else{
                         cout << "invaild negative number!" << endl;
                         return false;
+                    }
+                }
+                else if(token_arr[index] == "00" && state != "1" && state != "10"){
+                    // cout << "++ --" << state << endl;
+                    if(token_arr[index + 1] == "45" || token_arr[index + 1] == "48")
+                        index += 2;
+                    else{
+                        index++;
                     }
                 }
                 else if((token_arr[index] == "45" || token_arr[index] == "48") && state != "1" && state != "10"){
