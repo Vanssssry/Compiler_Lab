@@ -534,6 +534,7 @@ string Scanner::scan(string filename, string mode){
     string seq = "";
     while(getline(infile, line)){
         int i = 0;
+        cout << line << endl;
         while(i < line.size()){
             char c = line[i];
             state = state_change(state, c);

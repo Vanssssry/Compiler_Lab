@@ -87,6 +87,10 @@ bool LL1::check(vector<string> token_arr){
         while(!analysis_stack.empty()){
             char curr = analysis_stack.top();
             analysis_stack.pop();
+            if(index == token_arr.size()){
+                cout << "Missing terminator!" << endl;
+                return false;
+            }
             // cout << curr << " " << token_arr[index] << endl;
             if(curr == 'B'){
                 if(Vt[curr].find(token_arr[index]) == Vt[curr].end()){
@@ -343,6 +347,10 @@ bool LR::check(vector<string> token_arr){
         state_stack.push("0");
         while(!symbol_stack.empty()){
             string state = state_stack.top();
+            if(index == token_arr.size()){
+                cout << "Missing terminator!" << endl;
+                return false;
+            }
             // cout << "State " << state << " " << token_arr[index] << endl;
             if(analysis_table[state].find(token_arr[index]) == analysis_table[state].end()){
                 string in_stack = "";
