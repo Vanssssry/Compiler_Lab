@@ -246,7 +246,7 @@ bool LL1::check(vector<pair<string,string> >token_arr){
                     }
                     else if(token_arr[index].second == "00"){
                         if(token_arr[index + 1].second == "45"){
-                            string a = token_arr[index + 1].first;
+                            string a = token_arr[index].first;
                             string b = "t" + to_string(cnt++);
                             string res = "( ++ " + a + " _ " + b + " )";
                             QT.push_back(res);
@@ -254,7 +254,7 @@ bool LL1::check(vector<pair<string,string> >token_arr){
                             index += 2;
                         }
                         else if(token_arr[index + 1].second == "48"){
-                            string a = token_arr[index + 1].first;
+                            string a = token_arr[index].first;
                             string b = "t" + to_string(cnt++);
                             string res = "( -- " + a + " _ " + b + " )";
                             QT.push_back(res);
