@@ -309,6 +309,8 @@ bool LL1::check(vector<pair<string,string> >token_arr){
                             QT.push_back(res);
                             assign_flag = 0;
                         }
+                        cnt = 0;
+                        QT.push_back("Product Over");
                         index++;
                     }
                 }
