@@ -196,9 +196,9 @@ vector<string> Generator::generate(vector<string> QT, symbol_table_system STM){
                     index--;
                 }
                 B = QT[i].substr(index + 1, len - 1);
-                cout << B << endl;
+                // cout << B << endl;
                 QT_B_L = QT[i].substr(j + 1, 1);
-                cout << QT_B_L << endl;
+                // cout << QT_B_L << endl;
                 cnt++;
             }
             else if(QT[i][j] == '(' && cnt == 2){
@@ -209,9 +209,9 @@ vector<string> Generator::generate(vector<string> QT, symbol_table_system STM){
                     index--;
                 }
                 C = QT[i].substr(index + 1, len - 1);
-                cout << C << endl;
+                // cout << C << endl;
                 QT_C_L = QT[i].substr(j + 1, 1);
-                cout << QT_C_L << endl;
+                // cout << QT_C_L << endl;
                 cnt++;
             }
             else if(QT[i][j] == '(' && cnt == 3){
@@ -222,9 +222,9 @@ vector<string> Generator::generate(vector<string> QT, symbol_table_system STM){
                     index--;
                 }
                 A = QT[i].substr(index + 1, len - 1);
-                cout << A << endl;
+                // cout << A << endl;
                 QT_A_L = QT[i].substr(j + 1, 1);
-                cout << QT_A_L << endl;
+                // cout << QT_A_L << endl;
                 cnt++;
             }
         }

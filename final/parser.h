@@ -78,7 +78,7 @@ void LL1::bulid_analysis_table(){
 
     LL1_StringMap if_state({{"18", {"else_state", "{IE(ie)}", "56", "58", "program", "55", "{IF(if)}", "54", "A", "53","18"}}});
 
-    LL1_StringMap else_state({{"12", {"{IE(ie)}", "56", "58", "statement", "55", "{EL(el)}", "12"}}, {"54", {}}, {"56", {}}, {"58", {}}, {"00", {"program"}}, {"03", {"program"}}, {"32", {"program"}}, {"06", {"program"}}, {"19", {"program"}}, {"15",{"program"}}, {"53", {"program"}}, {"55", {"program"}}, {"18", {"program"}}});
+    LL1_StringMap else_state({{"12", {"{IE(ie)}", "56", "58", "program", "55", "{EL(el)}", "12"}}, {"54", {}}, {"56", {}}, {"58", {}}, {"00", {"program"}}, {"03", {"program"}}, {"32", {"program"}}, {"06", {"program"}}, {"19", {"program"}}, {"15",{"program"}}, {"53", {"program"}}, {"55", {"program"}}, {"18", {"program"}}});
 
     LL1_StringMap A({{"00", {"A_", "E"}}, {"03", {"A_", "E"}}, {"53", {"A_", "E"}}});
 
@@ -147,14 +147,14 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 cout << "Missing terminator!" << endl;
                 return false;
             }
-            cout << curr << " " << token_arr[index].second << " " << token_arr[index].first << " " << index << " " << token_arr.size() << endl;
+            // cout << curr << " " << token_arr[index].second << " " << token_arr[index].first << " " << index << " " << token_arr.size() << endl;
             if(curr == "{init()}"){
                 curr_var.cat = "v";
                 curr_var.L = "y";
             }
             else if(curr == "{name()}"){
                 string cur_name = log.top();
-                cout << "{name()}" << cur_name << endl;
+                // cout << "{name()}" << cur_name << endl;
                 log.pop();
                 var_name_seq.push(cur_name);
             }
@@ -178,14 +178,14 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 // cout << "enter: " << var_name_seq.empty() << endl;
                 while(!var_name_seq.empty()){
                     string tmp_name = var_name_seq.top();
-                    cout << "enter: " << tmp_name << endl;
+                    // cout << "enter: " << tmp_name << endl;
                     var_name_seq.pop();
                     STM.ST[tmp_name].cat = curr_var.cat;
                     STM.ST[tmp_name].type = curr_var.type;
                     STM.ST[tmp_name].L = curr_var.L;
                     STM.ST[tmp_name].addr = offset;
                     offset += curr_var.addr;
-                    cout << "curr_off: " << offset << endl;
+                    // cout << "curr_off: " << offset << endl;
                 }
             }
             else if(curr == "{assi(=)}"){
@@ -207,7 +207,7 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 SEM.push(res);
                 cnt++;
                 string curr_type = STM.ST.find(a) == STM.ST.end() ? STM.ST[b].type : STM.ST[a].type;
-                cout << curr_type << endl;
+                // cout << curr_type << endl;
                 table_item tmp(res, curr_type, "v", "n", offset);
                 offset += type_len[curr_type];
                 STM.ST[res] = tmp;
@@ -232,7 +232,7 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 SEM.push(tmp);
             }
             else if(curr == "{IF(if)}"){
-                cout << SEM.empty() << endl;
+                // cout << SEM.empty() << endl;
                 string a = SEM.top();
                 SEM.pop();
                 string tmp = "( if " + a + ", _, _ )";
