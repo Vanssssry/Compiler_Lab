@@ -17,6 +17,7 @@
         "stack": "cpp",
         "queue": "cpp",
         "vector": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "iosfwd": "cpp"
     }
 }

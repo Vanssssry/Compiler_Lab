@@ -37,3 +37,4 @@ else{
         b = a;
     };
 };
+// int a; int a;

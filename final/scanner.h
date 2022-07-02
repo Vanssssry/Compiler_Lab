@@ -535,7 +535,7 @@ string Scanner::scan(string filename, string mode, symbol_table_system & STM){
     string seq = "";
     while(getline(infile, line)){
         int i = 0;
-        cout << line << endl;
+        // cout << line << endl;
         while(i < line.size()){
             char c = line[i];
             state = state_change(state, c);
@@ -557,6 +557,10 @@ string Scanner::scan(string filename, string mode, symbol_table_system & STM){
                 }
                 // token_code += "<" + token + ", " + state2code(state, token) + ">" + to_string(state) + " " + seq + "\n";
                 string code = state2code(state, token);
+                if(code == "-1"){
+                    cout << "token error!" << endl;
+                    return "";
+                }
                 token_code += "[" + token + "," + code + "]";
                 if(code == "00"){
                     table_item tmp(token, "", "", "", -1);

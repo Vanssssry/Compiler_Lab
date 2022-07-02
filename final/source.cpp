@@ -19,33 +19,42 @@ int main(){
     // cout << "token sequence: " << token_seq << endl;
     vector<pair<string,string> > token_arr = pre_process(token_seq);
     // for(int i = 0 ; i < token_arr.size() ; ++i){
-    //     cout << token_arr[i].first << " " << token_arr[i].second << endl;
+    //     cout  << "<" << token_arr[i].first << "," << token_arr[i].second << ">";
     // }
+    // cout << endl;
     // cout << token_seq << endl;
-    // cout << parser.check(token_arr) << endl;
     if(parser.check(token_arr, stm)){
         cout << "Expression LL1 correct!" << endl;
-        parser.print_QT();
-        cout << "************* " << endl; 
+        // parser.print_QT();
+        // cout << endl;
+        // cout << "************* " << endl; 
     }
+    // cout << "symbol_table:" << endl;
     // for(auto it : stm.ST){
     //     cout << it.first << " " << it.second.name << " " << it.second.type << " " << it.second.cat << " " << it.second.L << " " << it.second.addr << " " << endl;
     // }
+    // cout << "constant table:" << endl;
     // for(auto it : stm.CT){
     //     cout << it.first << " " << it.second << endl;
     // }
     int code_num = parser.get_QT().size();
     vector<vector<pair<int, string> > > block = gen.get_block(parser.get_QT());
     vector<string> obj = gen.complie(block, stm, code_num);
+    ofstream outfile("obj.txt", ios::out);
+    for(auto s : obj){
+        s += "\n";
+        outfile << s;
+    }
+    outfile.close();
     // for(auto v: block){
     //     cout << "block" << endl;
     //     for(auto s: v){
     //         cout << s.first << " " << s.second << endl;
     //     }
     // }
-    for(auto s : obj){
-        cout << s << endl;
-    }
+    // for(auto s : obj){
+    //     cout << s << endl;
+    // }
     // vector<string> QT = gen.scan_QT(parser.get_QT(), stm);
     // cout << "QT with L :" << endl;
     // for(auto s : QT){

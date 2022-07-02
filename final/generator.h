@@ -314,7 +314,7 @@ vector<vector<pair<int, string> > > Generator::get_block(vector<string> QT){
         //     cout << s << endl;
         // }
     }
-    cout << block.size() << endl;
+    // cout << block.size() << endl;
     // for(int i = 1 ; i < block.size() ; ++i){
     //     // cout << block[i][0] << endl;
     //     if(block[i][0].substr(2, 2) == "if"){
@@ -414,6 +414,8 @@ vector<string> Generator::generate(vector<string> QT, symbol_table_system STM){
         if(op == "+"){
             if(QT_B_L == " " && QT_C_L == " "){
                 reg_c = to_string(stoi(B) + stoi(C));
+                string code1 = "sub " + reg_a + ", " + reg_a + ", " + reg_a;
+                obj.push_back(code1);
                 reg_b = reg_a;
             }
             else{
@@ -923,9 +925,9 @@ vector<string> Generator::complie(vector<vector<pair<int,string> > > block, symb
             // break;
         }
     }
-    for(auto s : QT_F){
-        cout << s << endl;
-    }
+    // for(auto s : QT_F){
+    //     cout << s << endl;
+    // }
     obj = generate(QT_F, STM);
     return obj;
 }

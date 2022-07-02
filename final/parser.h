@@ -57,7 +57,7 @@ vector<string> LL1::get_QT(){
 
 void LL1::print_QT(){
     for(string s : QT){
-        cout << s << endl;
+        cout << s ;
     }
 }
 
@@ -179,6 +179,10 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 while(!var_name_seq.empty()){
                     string tmp_name = var_name_seq.top();
                     // cout << "enter: " << tmp_name << endl;
+                    if(STM.ST.find(tmp_name) != STM.ST.end() && STM.ST[tmp_name].type == curr_var.type){
+                        cout << tmp_name << " is redefined!" << endl;
+                        return false;
+                    }
                     var_name_seq.pop();
                     STM.ST[tmp_name].cat = curr_var.cat;
                     STM.ST[tmp_name].type = curr_var.type;
@@ -193,6 +197,18 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 SEM.pop();
                 string b = SEM.top();
                 SEM.pop();
+                if(STM.ST.find(a) != STM.ST.end()){
+                    if(STM.ST[a].type == "char" || STM.ST[a].type == "void"){
+                        cout << a << " is not a number!" << endl;
+                        return false;
+                    }
+                }
+                if(STM.ST.find(b) != STM.ST.end()){
+                    if(STM.ST[b].type == "char" || STM.ST[b].type == "void"){
+                        cout << b << " is not a number!" << endl;
+                        return false;
+                    }
+                }
                 string res = "( = " + a + ", _, " + b + " )";
                 // cout << res << endl;
                 QT.push_back(res);
@@ -204,6 +220,18 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 SEM.pop();
                 string b = SEM.top();
                 SEM.pop();
+                if(STM.ST.find(a) != STM.ST.end()){
+                    if(STM.ST[a].type == "char" || STM.ST[a].type == "void"){
+                        cout << a << " is not a number!" << endl;
+                        return false;
+                    }
+                }
+                if(STM.ST.find(b) != STM.ST.end()){
+                    if(STM.ST[b].type == "char" || STM.ST[b].type == "void"){
+                        cout << b << " is not a number!" << endl;
+                        return false;
+                    }
+                }
                 string res = "t" + to_string(cnt);
                 SEM.push(res);
                 cnt++;
