@@ -199,6 +199,7 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
             }
             else if(curr == "{GEQ(w2)}" || curr == "{GEQ(w0)}" || curr == "{GEQ(w1)}"){
                 string op = log.top();
+                log.pop();
                 string a = SEM.top();
                 SEM.pop();
                 string b = SEM.top();
@@ -390,7 +391,7 @@ bool LL1::check(vector<pair<string,string> >token_arr, symbol_table_system & STM
                 }
             }
             else if(curr == "56"){   
-                if(token_arr[index].second == "00" || token_arr[index].second == "32" || token_arr[index].second == "19" || token_arr[index].second == "06" || token_arr[index].second == "15"){
+                if(token_arr[index].second == "00" || token_arr[index].second == "32" || token_arr[index].second == "19" || token_arr[index].second == "06" || token_arr[index].second == "15" || token_arr[index].second == "18" || token_arr[index].second == "12"){
                     analysis_stack.push("56");
                     analysis_stack.push("#");
                     analysis_stack.push("program");
